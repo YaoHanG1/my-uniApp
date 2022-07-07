@@ -1,6 +1,7 @@
 <template>
 	<view class="goods-item">
 		<view class="goods-item-left">
+			<radio @click="radioClickHandler" :checked="goods.goods_state" color="#c00000" v-if="showRadio"></radio>
 			<image :src="goods.goods_small_logo || defaultPic" class="goods-pic"></image>
 		</view>
 		<view class="goods-item-right">
@@ -8,6 +9,7 @@
 			<view class="goods-info-box">
 																<!-- 调用过滤器保留两位小数 -->
 				<view class="goods-price">￥{{goods.goods_price | toFixed}}</view>	
+				<uni-number-box :min="1" @change="numChangeHandler" :value="goods.goods_count" v-if="showNum"/>
 			</view>
 		</view>
 	</view>
@@ -22,7 +24,15 @@
 				default() {
 					return {}
 				}
-			}
+			},
+			showRadio: {
+				type: Boolean,
+				default: false
+			},
+			showNum: {
+				type: Boolean,
+				default: false
+			},
 		},
 		data() {
 			return {
@@ -33,6 +43,21 @@
 		filters: {
 			toFixed(num) {
 				return Number(num).toFixed(2)
+			}
+		},
+		methods: {
+			radioClickHandler() {
+				this.$emit('radio-change', {
+					
+					goods_id: this.goods.goods_id,
+					goods_state: !this.goods.goods_state
+				})
+			},
+			numChangeHandler(val) {
+				this.$emit('num-change', {
+					goods_id: this.goods.goods_id,
+					goods_count: +val
+				})
 			}
 		}
 	}
@@ -46,7 +71,9 @@
 	
 		.goods-item-left {
 			margin-right: 5px;
-	
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			.goods-pic {
 				width: 100px;
 				height: 100px;
@@ -59,12 +86,14 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
-	
+			flex: 1;
 			.goods-name {
 				font-size: 13px;
 			}
 	
 			.goods-info-box {
+				display: flex;
+				justify-content: space-between;
 				.goods-price {
 					color: #c00000;
 					font-size: 16px;

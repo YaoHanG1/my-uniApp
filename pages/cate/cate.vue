@@ -9,14 +9,15 @@
 						@click="activeChanged(index)">{{item.cat_name}}</view>
 				</block>
 			</scroll-view>
-			
+
 			<!-- 右侧滚动条 -->
 			<scroll-view class="right-scroll-view" scroll-y :style="{height:wh + 'px'}" :scroll-top="scrollTop">
 				<view class="cate-lv2" v-for="(item2,index2) in cateLevel2" :key="index2">
 					<!-- 二级分类标题 -->
 					<view class="cate-lv2-title">{{item2.cat_name}}</view>
 					<view class="cate-lv3-list">
-						<view class="cate-lv3-item" v-for="(item3, index3) in item2.children" :key="index3" @click="gotoGoodsList(item3)">
+						<view class="cate-lv3-item" v-for="(item3, index3) in item2.children" :key="index3"
+							@click="gotoGoodsList(item3)">
 							<image :src="item3.cat_icon"></image>
 							<text>{{item3.cat_name}}</text>
 						</view>
@@ -29,14 +30,16 @@
 </template>
 
 <script>
+	import badgeMix from '@/mixins/tabbar-badge.js'
 	export default {
+		mixins: [badgeMix], // 注入mixins
 		data() {
 			return {
 				wh: '', // 当前设备可用屏幕高度
 				cateList: [], // 列表导航栏数字
 				cateLevel2: [], // 二级分类数据
 				active: 0,
-				scrollTop: 0		// 设置每次切换导航滚动条置顶
+				scrollTop: 0 // 设置每次切换导航滚动条置顶
 			};
 		},
 		onLoad() {
@@ -58,7 +61,7 @@
 			activeChanged(index) {
 				this.active = index // 点击激活高亮
 				this.cateLevel2 = this.cateList[index].children // 点击修改二级分类
-				this.scrollTop = this.scrollTop === 0 ? 1: 0
+				this.scrollTop = this.scrollTop === 0 ? 1 : 0
 			},
 			gotoGoodsList(item) {
 				uni.navigateTo({
@@ -66,9 +69,8 @@
 				})
 			},
 			gotoSearch() {
-				console.log('去搜索')
 				uni.navigateTo({
-					url:'/subpkg/search/search'
+					url: '/subpkg/search/search'
 				})
 			}
 		}

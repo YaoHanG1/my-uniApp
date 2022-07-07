@@ -17,7 +17,7 @@
 					<text>收藏</text>
 				</view>
 			</view>
-			<view class="yf">快递，免运费</view>
+			<view class="yf">快递，免运费{{cart.length}}</view>
 		</view>
 		
 		<rich-text :nodes="goods_info.goods_introduce"></rich-text>
@@ -30,7 +30,25 @@
 </template>
 
 <script>
+	import { mapState, mapMutations, mapGetters } from 'vuex'
 	export default {
+		
+		computed: {
+			...mapState('m_cart', ['cart']),
+			...mapGetters('m_cart', ['total'])
+		},
+		watch: {
+			total: {
+				handler(newVal) {
+					// 如果store里total的值发生了变化，就改变options里的info
+					const findResult = this.options.find(x => x.text === '购物车')
+					if(findResult) {
+						findResult.info = newVal
+					}
+				},
+				immediate: true,	// 初始化时调用一下
+			}
+		},
 		data() {
 			return {
 				goods_info: {},
@@ -40,7 +58,7 @@
 				},{
 					icon: 'cart',
 					text: '购物车',
-					info: 2
+					info: 0
 				}],
 				buttonGroup: [{
 					text: '加入购物车',
@@ -84,8 +102,19 @@
 				}
 			},
 			buttonClick(e) {
-				console.log(e)
-			}
+				if(e.content.text === '加入购物车') {
+					const goods = {
+						goods_id: this.goods_info.goods_id,
+						goods_name: this.goods_info.goods_name,
+						goods_count: 1,
+						goods_price: this.goods_info.goods_price,
+						goods_small_logo: this.goods_info.goods_small_logo,
+						goods_state: true
+					}
+					this.addToCart(goods)
+				}
+			},
+			...mapMutations('m_cart', ['addToCart'])
 		},
 
 	}
