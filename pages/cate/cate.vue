@@ -111,7 +111,7 @@
 	}
 
 	.right-scroll-view {
-		background-color: #fff;
+		// background-color: #fff;
 
 		.cate-lv2-title {
 			font-size: 12px;
